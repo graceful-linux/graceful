@@ -9,5 +9,6 @@
 #include "types.h"
 
 
-extern int gLogLevel = GRACEFUL_LOG_LEVEL_WARNING;
-const char* gConfigFilePath = NULL;
+Config                      gConfig;
+const char*                 gConfigFilePath = NULL;
+int                         gLogLevel = GRACEFUL_LOG_LEVEL_WARNING;

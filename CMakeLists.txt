@@ -13,5 +13,6 @@ add_definitions(
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
 find_package (PkgConfig)
+pkg_check_modules(XKB xkbcommon xkbcommon-x11 REQUIRED)
 
 add_subdirectory(src)

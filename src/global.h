@@ -4,10 +4,13 @@
 
 #ifndef graceful_GRACEFUL_GLOBAL_H
 #define graceful_GRACEFUL_GLOBAL_H
+#include "types.h"
 
-extern int gLogLevel;
-extern const char* gConfigFilePath;
+#define GRACEFUL_SYS_CONF_DIR               "/etc"
 
+extern int              gLogLevel;
+extern Config           gConfig;
+extern const char*      gConfigFilePath;
 
 
 
