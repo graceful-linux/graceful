@@ -1,0 +1,91 @@
+//
+// Created by dingjing on 2025/12/11.
+//
+
+#ifndef graceful_GRACEFUL_KEYMAP_H
+#define graceful_GRACEFUL_KEYMAP_H
+#include <stddef.h>
+
+typedef struct
+{
+    const char*     fullName;
+    const char*     abbr;
+} LayoutMapping;
+
+static const LayoutMapping gLayoutMappings[] = {
+    {"English (US)", "us"},
+    {"English (UK)", "gb"},
+    {"Russian", "ru"},
+    {"German", "de"},
+    {"French", "fr"},
+    {"Spanish", "es"},
+    {"Italian", "it"},
+    {"Japanese", "jp"},
+    {"Chinese", "cn"},
+    {"Korean", "kr"},
+    {"Arabic", "ar"},
+    {"Hebrew", "il"},
+    {"Greek", "gr"},
+    {"Turkish", "tr"},
+    {"Portuguese", "pt"},
+    {"Portuguese (Brazil)", "br"},
+    {"Swedish", "se"},
+    {"Norwegian", "no"},
+    {"Danish", "dk"},
+    {"Finnish", "fi"},
+    {"Polish", "pl"},
+    {"Czech", "cz"},
+    {"Hungarian", "hu"},
+    {"Ukrainian", "ua"},
+    {"Belarusian", "by"},
+    {"Bulgarian", "bg"},
+    {"Croatian", "hr"},
+    {"Romanian", "ro"},
+    {"Serbian", "rs"},
+    {"Slovak", "sk"},
+    {"Slovenian", "si"},
+    {"Estonian", "ee"},
+    {"Latvian", "lv"},
+    {"Lithuanian", "lt"},
+    {"Dutch", "nl"},
+    {"Flemish", "be"},
+    {"Swiss German", "ch"},
+    {"French (Canada)", "ca"},
+    {"French (Switzerland)", "ch-fr"},
+    {"Icelandic", "is"},
+    {"Maltese", "mt"},
+    {"Irish", "ie"},
+    {"Albanian", "al"},
+    {"Macedonian", "mk"},
+    {"Bosnian", "ba"},
+    {"Montenegrin", "me"},
+    {"Dvorak", "dv"},
+    {"Colemak", "cm"},
+    {"Workman", "wm"},
+    {"Norman", "nm"},
+    {"QGMLWY", "qg"},
+    {"AZERTY", "az"},
+    {"QWERTZ", "qz"},
+    {"BÉPO (French ergonomic)", "bepo"},
+    {"Neo", "neo"},
+    {"Turkish F", "trf"},
+    {"Tibetan", "bo"},
+    {"Thai", "th"},
+    {"Vietnamese", "vn"},
+    {"Lao", "la"},
+    {"Khmer", "kh"},
+    {"Hindi", "in"},
+    {"Persian", "ir"},
+    {"Urdu", "pk"},
+    {"Bangla", "bd"},
+    {"Sinhala", "lk"},
+    {"Nepali", "np"},
+    {"Tamil", "ta"},
+    {"Telugu", "te"},
+    {"Kannada", "kn"},
+    {"Malayalam", "ml"},
+    {NULL, NULL} // 结束标记
+};
+
+
+#endif // graceful_GRACEFUL_KEYMAP_H
