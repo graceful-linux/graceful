@@ -9,6 +9,8 @@
 #include <wlr/util/box.h>
 #include <wlr/backend/wayland.h>
 #include <xkbcommon/xkbcommon.h>
+#include <wlr/types/wlr_keyboard.h>
+#include <linux/input-event-codes.h>
 #include <scenefx/types/fx/blur_data.h>
 #include <scenefx/types/fx/corner_location.h>
 
@@ -98,7 +100,7 @@ enum
     LEFT,
     RIGHT,
     UNDIR
-}; /* smartmovewin */
+}; /* smart move win */
 
 enum
 {

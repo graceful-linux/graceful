@@ -6,8 +6,10 @@
 
 #include <linux/limits.h>
 
-#include "../common/log.h"
+
+#include "types.h"
 #include "common/utils.h"
+#include "../common/log.h"
 
 
 typedef int (*FuncType)(const Arg *);
@@ -18,10 +20,11 @@ static int parse_button(const char *str);
 static int parse_direction(const char *str);
 static int parse_fold_state(const char *str);
 static uint32_t parse_mod(const char *mod_str);
-static int parse_mouse_action(const char *str);
 static long int parse_color(const char *hexStr);
 static uint32_t parse_num_type(const char *str);
+static Cursor parse_mouse_action(const char *str);
 static int parse_circle_direction(const char *str);
+static void parse_bind_flags(const char *str, KeyBinding *kb);
 static void parse_line(Config* config, const char* lineBuffer);
 static KeySymCode parse_key(const char *keyStr, bool isBindSym);
 static void parse_option(Config* config, char* key, char* value);
@@ -38,8 +41,14 @@ void config_reload(void)
     reset_option();
 }
 
+void config_parse(void)
+{
+
+}
+
 void config_override(void)
 {
+#if 0
     // 动画启用
     animations = CLAMP_INT(gConfig.animations, 0, 1);
     layer_animations = CLAMP_INT(gConfig.layerAnimations, 0, 1);
@@ -192,8 +201,13 @@ void config_override(void)
     memcpy(animation_curve_tag, gConfig.animationCurveTag, sizeof(animation_curve_tag));
     memcpy(animation_curve_close, gConfig.animationCurveClose, sizeof(animation_curve_close));
     memcpy(animation_curve_focus, gConfig.animationCurveFocus, sizeof(animation_curve_focus));
+#endif
 }
 
+void config_free(void)
+{
+
+}
 
 void config_parse_file(Config* config, const char* filePath)
 {
@@ -476,6 +490,7 @@ static void parse_option(Config* config, char* key, char* value)
     else if (strcmp(key, "unfocusedOpacity") == 0) {
         config->unfocusedOpacity = strtof(value, NULL);
     }
+#if 0
     else if (strcmp(key, "xkbRulesRules") == 0) {
         strncpy(xkbRulesRules, value, sizeof(xkbRulesRules) - 1);
         xkbRulesRules[sizeof(xkbRulesRules) - 1] = '\0';
@@ -493,9 +508,10 @@ static void parse_option(Config* config, char* key, char* value)
             '\0'; // 确保字符串以 null 结尾
     } else if (strcmp(key, "xkb_rules_options") == 0) {
         strncpy(xkb_rules_options, value, sizeof(xkb_rules_options) - 1);
-        xkb_rules_options[sizeof(xkb_rules_options) - 1] =
-            '\0'; // 确保字符串以 null 结尾
-    } else if (strcmp(key, "scroller_proportion_preset") == 0) {
+        xkb_rules_options[sizeof(xkb_rules_options) - 1] = '\0';
+    }
+#endif
+    else if (strcmp(key, "scroller_proportion_preset") == 0) {
         // 1. 统计 value 中有多少个逗号，确定需要解析的浮点数个数
         int count = 0; // 初始化为 0
         for (const char *p = value; *p; p++) {
@@ -525,7 +541,7 @@ static void parse_option(Config* config, char* key, char* value)
                 return;
             }
             // Clamp the value between 0.0 and 1.0 (or your desired range)
-            config->scrollerProportionPreset[i] = CLAMP_FLOAT(value_set, 0.1f, 1.0f);
+            config->scrollerProportionPreset[i] = CLAMP_FLOAT(valueSet, 0.1f, 1.0f);
             token = strtok(NULL, ",");
             i++;
         }
@@ -842,7 +858,7 @@ static void parse_option(Config* config, char* key, char* value)
                 utils_trim_whitespace(val);
 
                 if (strcmp(keyT, "id") == 0) {
-                    rule->id = CLAMP_INT(strtol(val, NULL, 10), 0, LENGTH(tags));
+                    rule->id = CLAMP_INT(strtol(val, NULL, 10), 0, LENGTH(gTags));
                 }
                 else if (strcmp(keyT, "layoutName") == 0) {
                     rule->layoutName = strdup(val);
@@ -927,10 +943,10 @@ static void parse_option(Config* config, char* key, char* value)
         rule->isNoShadow = -1;
         rule->isNoAnimation = -1;
         rule->isOpenSilent = -1;
-        rule->isTagsSilent = -1;
+        rule->isTagSilent = -1;
         rule->isNamedScratchpad = -1;
         rule->isUnglobal = -1;
-        rule->isglobal = -1;
+        // rule->isglobal = -1;
         rule->isOverlay = -1;
         rule->allowShortcutsInhibit = -1;
         rule->ignoreMaximize = -1;
@@ -1025,7 +1041,7 @@ static void parse_option(Config* config, char* key, char* value)
                 } else if (strcmp(key, "isUnglobal") == 0) {
                     rule->isUnglobal = (int) strtol (val, NULL, 10);
                 } else if (strcmp(key, "isGlobal") == 0) {
-                    rule->isGlobal = (int) strtol (val, NULL, 10);
+                    // rule->isGlobal = (int) strtol (val, NULL, 10);
                 } else if (strcmp(key, "scrollerProportionSingle") == 0) {
                     rule->scrollerProportionSingle = strtof (val, NULL);
                 } else if (strcmp(key, "unfocusedOpacity") == 0) {
@@ -1822,7 +1838,7 @@ static int parse_button(const char *str)
     }
 }
 
-static int parse_mouse_action(const char *str)
+static Cursor parse_mouse_action(const char *str)
 {
     char lowerStr[20];
     int i = 0;
@@ -1832,21 +1848,20 @@ static int parse_mouse_action(const char *str)
     }
     lowerStr[i] = '\0';
 
-    if (strcmp(lowerStr, "curmove") == 0) {
-        return CurMove;
+    if (strcmp(lowerStr, "cursorMove") == 0) {
+        return CURSOR_MOVE;
     }
-    else if (strcmp(lowerStr, "curresize") == 0) {
-        return CurResize;
+    else if (strcmp(lowerStr, "cursorResize") == 0) {
+        return CURSOR_RESIZE;
     }
-    else if (strcmp(lowerStr, "curnormal") == 0) {
-        return CurNormal;
+    else if (strcmp(lowerStr, "cursorNormal") == 0) {
+        return CURSOR_NORMAL;
     }
-    else if (strcmp(lowerStr, "curpressed") == 0) {
-        return CurPressed;
+    else if (strcmp(lowerStr, "cursorPressed") == 0) {
+        return CURSOR_PRESSED;
     }
-    else {
-        return 0;
-    }
+
+    return CURSOR_NORMAL;
 }
 
 static FuncType parse_func_name(char* funcName, Arg* arg, char* argValue, char* argValue2, char* argValue3, char* argValue4, char* argValue5)
@@ -1855,6 +1870,8 @@ static FuncType parse_func_name(char* funcName, Arg* arg, char* argValue, char* 
     (*arg).v = NULL;
     (*arg).v2 = NULL;
     (*arg).v3 = NULL;
+
+#if 0
 
     if (strcmp(funcName, "focusStack") == 0) {
         func = focus_stack;
@@ -2108,11 +2125,14 @@ static FuncType parse_func_name(char* funcName, Arg* arg, char* argValue, char* 
     } else {
         return NULL;
     }
+#endif
+
     return func;
 }
 
 static void reset_option(void)
 {
+#if 0
     init_baked_points();
     handlecursoractivity();
     reset_keyboard_layout();
@@ -2130,4 +2150,33 @@ static void reset_option(void)
     reapply_monitor_rules();
 
     arrange(selmon, false);
+#endif
+}
+
+// 解析bind组合字符串
+static void parse_bind_flags(const char *str, KeyBinding *kb)
+{
+    // 检查是否以"bind"开头
+    if (strncmp(str, "bind", 4) != 0) {
+        return;
+    }
+
+    const char *suffix = str + 4; // 跳过"bind"
+
+    // 遍历后缀字符
+    for (int i = 0; suffix[i] != '\0'; i++) {
+        switch (suffix[i]) {
+        case 's':
+            kb->keySymCode.type = KEY_TYPE_SYM;
+            break;
+        case 'l':
+            kb->isLockApply = true;
+            break;
+        case 'r':
+            kb->isReleaseApply = true;
+            break;
+        default:
+            break;
+        }
+    }
 }

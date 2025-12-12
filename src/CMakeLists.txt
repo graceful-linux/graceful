@@ -5,7 +5,7 @@ add_executable(graceful main.c
         common/log.h
         common/utils.h common/utils.c
 
-#        config/config.h config/config.c
+        config/config.h config/config.c
 )
 target_link_libraries(graceful PUBLIC
         ${XKB_LIBRARIES} ${AQU_LIBRARIES} ${SCE_LIBRARIES} ${WL_LIBRARIES} ${PCRE_LIBRARIES})
