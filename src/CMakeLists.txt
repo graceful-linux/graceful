@@ -17,7 +17,6 @@ add_executable(graceful main.c
         config/config.h config/config.c
 #        ext-protocol/wlr_ext_workspace_v1.h ext-protocol/wlr_ext_workspace_v1.c
 )
-message(STATUS ${protocolSrc})
 
 target_link_libraries(graceful PUBLIC
         ${WL_LIBRARIES}
@@ -36,3 +35,5 @@ target_include_directories(graceful PUBLIC
         ${PCRE_INCLUDE_DIRS}
         ${WAYLAND_INCLUDE_DIRS}
 )
+
+set_target_properties(graceful PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")

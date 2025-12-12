@@ -16,8 +16,8 @@ add_definitions(
 
 include_directories(BEFORE
         /usr/local/include/
-        ${CMAKE_BINARY_DIR}
         ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/src/protocols
 )
 
 include(${CMAKE_SOURCE_DIR}/src/protocols/protocol.cmake)
