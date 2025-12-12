@@ -65,13 +65,19 @@
         } \
     } while (0)
 
+#define COLOR0(hex)     (((hex >> 24) & 0xFF) / 255.0f)
+#define COLOR1(hex)     (((hex >> 16) & 0xFF) / 255.0f)
+#define COLOR2(hex)     (((hex >>  8) & 0xFF) / 255.0f)
+#define COLOR3(hex)     (((hex      ) & 0xFF) / 255.0f)
+
 #define COLOR(hex) \
     { \
-        ((hex >> 24) & 0xFF) / 255.0f, \
-        ((hex >> 16) & 0xFF) / 255.0f, \
-        ((hex >>  8) & 0xFF) / 255.0f, \
-        (hex         & 0xFF) / 255.0f \
+        COLOR0(hex), \
+        COLOR1(hex), \
+        COLOR2(hex), \
+        COLOR3(hex), \
     }
+
 
 static const char *gTags[] = {
     "1", "2", "3", "4", "5", "6", "7", "8", "9",

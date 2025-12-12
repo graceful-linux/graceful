@@ -40,6 +40,8 @@ int main (int argc, char *argv[])
         DDIE("XDG_RUNTIME_DIR must be set");
     }
 
+    init_global_config();
+
     setup();
     cleanup();
 

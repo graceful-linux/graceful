@@ -12,7 +12,9 @@ extern int              gLogLevel;
 extern Config           gConfig;
 extern const char*      gConfigFilePath;
 
+extern GlobalConfig     gGlobalConfig;          // 全局配置
 
+void init_global_config (void);
 
 
 
