@@ -1,12 +1,16 @@
 //
 // Created by dingjing on 2025/12/10.
 //
+
+#include <wait.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 
-#include "common/log.h"
+#include "wm/wm.h"
 #include "global.h"
+#include "common/log.h"
 
 
 static void setup (void);
@@ -62,10 +66,34 @@ static void print_version (void)
     printf("graceful Version: %s\n", PACKAGE_VERSION);
 }
 
+void sig_handler(int sigNo)
+{
+    if (sigNo == SIGCHLD) {
+        while (waitpid(-1, NULL, WNOHANG) > 0);
+    }
+    else if (sigNo == SIGINT || sigNo == SIGTERM) {
+        wm_quit();
+    }
+}
+
 static void setup (void)
 {
+    int i, sig[] = {SIGCHLD, SIGINT, SIGTERM, SIGTSTP};
+    struct sigaction sa = {.sa_flags = SA_RESTART, .sa_handler = sig_handler};
+
     setenv("XCURSOR_SIZE", "24", 1);
     setenv("XDG_CURRENT_DESKTOP", "graceful", 1);
+
+    sigemptyset(&sa.sa_mask);
+    for (i = 0; i < (int) C_N_ELEMENTS(sig); i++) {
+        sigaction(sig[i], &sa, NULL);
+    }
+
+    // 初始化日志
+    wm_log_init();
+
+
+
 }
 
 static void cleanup (void)

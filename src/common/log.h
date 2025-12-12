@@ -21,5 +21,4 @@
 
 
 
-
 #endif // graceful_GRACEFUL_LOG_H

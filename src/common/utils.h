@@ -5,7 +5,9 @@
 #ifndef graceful_GRACEFUL_UTILS_H
 #define graceful_GRACEFUL_UTILS_H
 #include <string.h>
+#include <stdint.h>
 #include <stdbool.h>
+
 
 void    utils_trim_whitespace   (char* str);
 
@@ -18,5 +20,7 @@ void    utils_trim_whitespace   (char* str);
 char*   utils_sanitize_string   (char* str);
 
 bool    utils_regex_match       (const char *patternMb, const char *strMb);
+
+void*   utils_calloc            (uint32_t num, uint64_t size);
 
 #endif // graceful_GRACEFUL_UTILS_H

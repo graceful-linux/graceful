@@ -77,3 +77,15 @@ bool utils_regex_match(const char* pattern, const char* str)
 
     return ret >= 0;
 }
+
+void* utils_calloc(uint32_t num, uint64_t size)
+{
+    void* p = calloc(num, size);
+    if (!p) {
+        DDIE("calloc failed!");
+    }
+
+    memset(p, 0, num * size);
+
+    return p;
+}

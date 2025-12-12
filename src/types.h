@@ -14,11 +14,14 @@
 #include <scenefx/types/fx/blur_data.h>
 #include <scenefx/types/fx/corner_location.h>
 
-#define GRACEFUL_LOG_LEVEL_DEBUG        0
-#define GRACEFUL_LOG_LEVEL_INFO         1
-#define GRACEFUL_LOG_LEVEL_WARNING      2
-#define GRACEFUL_LOG_LEVEL_ERROR        3
-#define GRACEFUL_LOG_LEVEL_DIE          4
+#include "macros.h"
+
+#define GRACEFUL_LOG_LEVEL_NONE         0
+#define GRACEFUL_LOG_LEVEL_DEBUG        1
+#define GRACEFUL_LOG_LEVEL_INFO         2
+#define GRACEFUL_LOG_LEVEL_WARNING      3
+#define GRACEFUL_LOG_LEVEL_ERROR        4
+#define GRACEFUL_LOG_LEVEL_DIE          5
 
 #define GRACEFUL_LOG_LEVEL_DEFAULT      GRACEFUL_LOG_LEVEL_WARNING
 
@@ -39,7 +42,7 @@
 #define LISTEN(E, L, H)                 wl_signal_add((E), ((L)->notify = (H), (L)))
 #define LISTEN_STATIC(E, H) \
     do { \
-        struct wl_listener *_l = ecalloc(1, sizeof(*_l)); \
+        struct wl_listener *_l = utils_calloc(1, sizeof(*_l)); \
         _l->notify = (H); \
         wl_signal_add((E), _l); \
     } while (0)
@@ -85,6 +88,8 @@ static const char *gTags[] = {
 
 typedef struct _Client Client;
 typedef struct _Monitor Monitor;
+
+C_BEGIN_EXTERN_C
 
 enum
 {
@@ -882,6 +887,26 @@ typedef struct
 
 typedef struct
 {
+    struct wl_list                  textInputs;
+    struct wlr_input_method_v2*     inputMethod;
+    struct wlr_surface*             focusedSurface;
+    struct wlr_keyboard_modifiers   forwardedModifiers;
+    struct text_input*              activeTextInput;
+    struct wl_list                  popups;
+    struct wlr_scene_tree*          popupTree;
+
+    struct wl_listener              newTextInput;
+    struct wl_listener              newInputMethod;
+    struct wl_listener              inputMethodCommit;
+    struct wl_listener              inputMethodGrabKeyboard;
+    struct wl_listener              inputMethodDestroy;
+    struct wl_listener              inputMethodNewPopupSurface;
+    struct wl_listener              keyboardGrabDestroy;
+    struct wl_listener              focusedSurfaceDestroy;
+} InputMethodRelay;
+
+typedef struct
+{
     char                            animationTypeOpen[8];           // 是否启用动画: slide,zoom
     char                            animationTypeClose[8];          // 是否启用动画: slide,zoom
     char                            layerAnimationTypeOpen[8];      // 是否启用layer动画: slide,zoom
@@ -981,6 +1006,8 @@ typedef struct
     char                            xkbRulesVariant[256];
     char                            xkbRulesOptions[256];
 
+    char                            cursorTheme[256];
+
     struct xkb_rule_names           xkbFallbackRules;
     struct xkb_rule_names           xkbDefaultRules;
     struct xkb_rule_names           xkbRules;
@@ -1060,9 +1087,12 @@ typedef struct
     double                              shadowsBlur;
     int                                 shadowsPositionX;
     int                                 shadowsPositionY;
+
     float                               shadowsColor[4];
 } GlobalConfig;
 
 typedef int (*gFuncType) (const Arg*);
+
+C_END_EXTERN_C
 
 #endif // graceful_GRACEFUL_TYPES_H
